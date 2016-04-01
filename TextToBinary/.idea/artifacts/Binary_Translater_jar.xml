@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Binary Translater:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Binary_Translater_jar</output-path>
+    <root id="archive" name="Binary Translater.jar">
+      <element id="module-output" name="Binary Translater" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_binary_translater" default="compile.module.binary_translater">
+  <dirname property="module.binary_translater.basedir" file="${ant.file.module_binary_translater}"/>
+  
+  <property name="module.jdk.home.binary_translater" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.binary_translater" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.binary_translater" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.binary_translater" value="-encoding windows-1252 -source 8 ${compiler.args}"/>
+  
+  <property name="binary_translater.output.dir" value="${module.binary_translater.basedir}/bin"/>
+  <property name="binary_translater.testoutput.dir" value="${module.binary_translater.basedir}/bin"/>
+  
+  <path id="binary_translater.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="binary_translater.module.production.classpath">
+    <path refid="${module.jdk.classpath.binary_translater}"/>
+  </path>
+  
+  <path id="binary_translater.runtime.production.module.classpath">
+    <pathelement location="${binary_translater.output.dir}"/>
+  </path>
+  
+  <path id="binary_translater.module.classpath">
+    <pathelement location="${binary_translater.output.dir}"/>
+    <path refid="${module.jdk.classpath.binary_translater}"/>
+  </path>
+  
+  <path id="binary_translater.runtime.module.classpath">
+    <pathelement location="${binary_translater.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.binary_translater">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.binary_translater">
+    <patternset refid="excluded.from.module.binary_translater"/>
+  </patternset>
+  
+  <path id="binary_translater.module.sourcepath">
+    <dirset dir="${module.binary_translater.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.binary_translater" depends="compile.module.binary_translater.production,compile.module.binary_translater.tests" description="Compile module Binary Translater"/>
+  
+  <target name="compile.module.binary_translater.production" depends="register.custom.compilers" description="Compile module Binary Translater; production classes">
+    <mkdir dir="${binary_translater.output.dir}"/>
+    <javac2 destdir="${binary_translater.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.binary_translater}/javac">
+      <compilerarg line="${compiler.args.binary_translater}"/>
+      <bootclasspath refid="binary_translater.module.bootclasspath"/>
+      <classpath refid="binary_translater.module.production.classpath"/>
+      <src refid="binary_translater.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.binary_translater"/>
+    </javac2>
+    
+    <copy todir="${binary_translater.output.dir}">
+      <fileset dir="${module.binary_translater.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.binary_translater.tests" depends="register.custom.compilers,compile.module.binary_translater.production" description="compile module Binary Translater; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.binary_translater" description="cleanup module">
+    <delete dir="${binary_translater.output.dir}"/>
+    <delete dir="${binary_translater.testoutput.dir}"/>
+  </target>
+</project>
